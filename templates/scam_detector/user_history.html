@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ nickname }}'s History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 text-gray-800 p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">{{ nickname }}'s Love Scam History 💀</h1>
+
+  <div class="space-y-4">
+    {% for report in history %}
+      <div class="bg-white p-4 rounded-lg shadow-lg">
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-bold">{{ report.created_at|date:"M d, Y H:i" }}</span>
+          <span class="text-2xl">{{ report.avatar }}</span>
+        </div>
+        <div class="mb-2">{{ report.crush_name }}</div>
+        <div class="bg-red-200 h-4 rounded-full overflow-hidden">
+          <div class="bg-red-500 h-4 rounded-full transition-all" style="width: {{ report.scam_level|floatformat:0 }}%"></div>
+        </div>
+        <p class="mt-1 italic text-gray-700">{{ report.comment }}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-6 text-center space-x-4">
+    <a href="{% url 'report' %}" class="bg-red-400 hover:bg-red-500 text-white px-6 py-2 rounded-full transition">Check another crush</a>
+    <a href="{% url 'leaderboard' %}" class="bg-blue-400 hover:bg-blue-500 text-white px-6 py-2 rounded-full transition">Leaderboard</a>
+  </div>
+</body>
+</html>

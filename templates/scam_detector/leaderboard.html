@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💀 Love Scam Leaderboard 💀</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 text-gray-800 p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">💀 Top Love Victims 💀</h1>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white rounded-lg shadow-lg">
+      <thead class="bg-red-400 text-white">
+        <tr>
+          <th class="px-4 py-2">Rank</th>
+          <th class="px-4 py-2">Nickname</th>
+          <th class="px-4 py-2">Avatar</th>
+          <th class="px-4 py-2">Crush</th>
+          <th class="px-4 py-2">Scam Level</th>
+          <th class="px-4 py-2">Comment</th>
+          <th class="px-4 py-2">History</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in top_reports %}
+        <tr class="text-center border-b hover:bg-red-100 transition duration-300">
+          <td class="px-4 py-2 font-bold">{{ forloop.counter }}</td>
+          <td class="px-4 py-2">{{ report.nickname }}</td>
+          <td class="px-4 py-2 text-2xl">{{ report.avatar }}</td>
+          <td class="px-4 py-2">{{ report.crush_name }}</td>
+          <td class="px-4 py-2">{{ report.scam_level }}</td>
+          <td class="px-4 py-2">{{ report.comment }}</td>
+          <td class="px-4 py-2">
+            <a class="text-blue-500 hover:underline" href="{% url 'user_history' report.nickname %}">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-6 text-center">
+    <a href="{% url 'report' %}" class="bg-red-400 hover:bg-red-500 text-white px-6 py-2 rounded-full transition">Check another crush</a>
+  </div>
+</body>
+</html>

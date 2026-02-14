@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💀 {{ report.nickname }}'s Love Scam Report 💀</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-pink-50 p-6 text-gray-800">
+
+  <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <!-- Header -->
+    <h1 class="text-3xl font-bold text-center mb-4">💀 Scam Report for {{ report.nickname }} 💀</h1>
+
+    <!-- Avatar & Crush -->
+    <div class="text-center mb-4">
+      <span class="text-5xl">{{ report.avatar }}</span>
+      <p class="mt-2 font-bold">Crush: {{ report.crush_name }}</p>
+    </div>
+
+    <!-- Scam Level -->
+    <p class="text-center font-bold mb-2">Scam Level: {{ report.scam_level }}</p>
+
+    <!-- Progress Bar -->
+    <div class="bg-red-200 h-6 rounded-full overflow-hidden mb-4">
+      <div class="bg-red-500 h-6 rounded-full transition-all" style="width: {{ report.scam_level|floatformat:0 }}%"></div>
+    </div>
+
+    <!-- Funny Comment -->
+    <p class="italic text-gray-700 text-center mb-4">{{ report.comment }}</p>
+
+    <!-- Social Sharing Buttons -->
+    <div class="mt-4 text-center space-y-2 md:space-y-0 md:flex md:justify-center md:space-x-4">
+      <a href="https://twitter.com/intent/tweet?text=Check+my+Love+Scam+Report!&url={{ request.build_absolute_uri }}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition">Share on Twitter</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-full transition">Share on Facebook</a>
+      <a href="https://wa.me/?text=Check+my+Love+Scam+Report!+{{ request.build_absolute_uri }}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition">Share on WhatsApp</a>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="mt-6 flex justify-between">
+      <a href="{% url 'report' %}" class="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-full transition flex-1 text-center mr-2">Check another crush</a>
+      <a href="{% url 'leaderboard' %}" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-full transition flex-1 text-center ml-2">Leaderboard</a>
+    </div>
+  </div>
+
+  <!-- Confetti / Skull Animation -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const scamLevel = {{ report.scam_level }};
+        if (scamLevel > 150) {
+            alert("💀 MAX ALERT! Love is officially a scam! 💀");
+            for (let i = 0; i < 200; i++) {
+                confetti({
+                    particleCount: 3,
+                    spread: 360,
+                    origin: { y: 0.5 },
+                    colors: ['#000000', '#FF0000', '#FFFFFF']
+                });
+            }
+        } else if (scamLevel > 100) {
+            alert("⚠️ High risk of heartbreak! ⚠️");
+            confetti({
+                particleCount: 100,
+                spread: 160,
+                colors: ['#FF0000', '#FF69B4']
+            });
+        } else if (scamLevel > 50) {
+            alert("😬 Moderate risk. Stay cautious.");
+            confetti({
+                particleCount: 50,
+                spread: 120,
+                colors: ['#FFA500', '#FFFF00']
+            });
+        } else {
+            alert("✅ Low risk… but stay alert 😎");
+            confetti({
+                particleCount: 30,
+                spread: 100,
+                colors: ['#00FF00', '#00FFFF']
+            });
+        }
+    });
+  </script>
+
+</body>
+</html>

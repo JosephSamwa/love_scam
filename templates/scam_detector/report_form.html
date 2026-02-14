@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💀 Love is a Scam 💀</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-pink-50 p-6 text-gray-800">
+
+<h1 class="text-3xl font-bold text-center mb-6">💀 Love Scam Detector 💀</h1>
+
+<form id="scam-form" method="post" class="max-w-lg mx-auto bg-white p-8 rounded-2xl shadow-2xl space-y-6 border border-pink-200">
+  {% csrf_token %}
+
+  <!-- User Info -->
+  <div class="grid grid-cols-1 gap-6">
+    <div>
+      <label for="id_nickname" class="block text-sm font-semibold mb-1">Your Nickname</label>
+      <input type="text" name="nickname" id="id_nickname" value="{{ form.nickname.value|default_if_none:'' }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-300" required>
+    </div>
+    <div>
+      <label for="id_avatar" class="block text-sm font-semibold mb-1">Avatar</label>
+      <select name="avatar" id="id_avatar" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-300">
+        <option value="">Select an avatar</option>
+        {% for value, label in form.avatar.field.choices %}
+          <option value="{{ value }}" {% if form.avatar.value == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="id_crush_name" class="block text-sm font-semibold mb-1">Crush's Name</label>
+      <input type="text" name="crush_name" id="id_crush_name" value="{{ form.crush_name.value|default_if_none:'' }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-300" required>
+    </div>
+  </div>
+
+  <!-- Classic Scam Behaviors -->
+  <div class="mt-6">
+    <h2 class="text-lg font-bold text-pink-600 mb-2 border-b pb-1">Classic Scam Behaviors</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+{% for field in form %}
+  {% if field.name not in "nickname,avatar,crush_name" and not field.name|slice:":18" == "ignored_valentines" and not field.name|slice:"-9:" == "_valentine" and field.name != "cheesy_gifts_received" and field.name != "flirty_texts_with_others" and field.name != "overhyped_celebration" and field.name != "romantic_promises_broken" and field.name != "social_media_posting_without_you" and field.name != "ignored_flower_delivery" and field.name != "valentine_surprise_failed" %}
+    <div class="flex items-center bg-pink-50 rounded-lg px-3 py-2 border border-pink-100 hover:bg-pink-100 transition">
+      <input type="checkbox" name="{{ field.name }}" id="id_{{ field.name }}" class="mr-2 accent-pink-500 scale-125" {% if field.value %}checked{% endif %}>
+      <label for="id_{{ field.name }}" class="text-sm">{{ field.label }}</label>
+    </div>
+  {% endif %}
+{% endfor %}
+
+    </div>
+  </div>
+
+  <!-- Valentine Edition Behaviors -->
+  <div class="mt-6">
+    <h2 class="text-lg font-bold text-red-600 mb-2 border-b pb-1">💘 Valentine Edition Scams 💘</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+{% for field in form %}
+  {% if field.name not in "denied_sex,mixed_signals,lies,ghosted,last_minute_cancel,flirts_with_others,inconsistent_messages,ignores_messages,cancels_dates_last_minute,posts_flirty_on_socials,talks_about_exes,hot_and_cold_behavior,flakey_promises,sends_confusing_signals,surprises_with_ghosting,nickname,avatar,crush_name" %}
+    <div class="flex items-center bg-pink-50 rounded-lg px-3 py-2 border border-pink-100 hover:bg-pink-100 transition">
+      <input type="checkbox" name="{{ field.name }}" id="id_{{ field.name }}" class="mr-2 accent-pink-500 scale-125" {% if field.value %}checked{% endif %}>
+      <label for="id_{{ field.name }}" class="text-sm">{{ field.label }}</label>
+    </div>
+  {% endif %}
+{% endfor %}
+
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="mt-8 bg-gradient-to-r from-pink-400 to-red-400 hover:from-pink-500 hover:to-red-500 text-white px-8 py-3 rounded-full shadow-lg font-bold text-lg transition w-full">Check Scam Level</button>
+</form>
+
+<!-- SweetAlert + Confetti -->
+<script>
+document.getElementById('scam-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch("{% url 'report' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": formData.get('csrfmiddlewaretoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const scamLevel = data.scam_level;
+            const slug = data.slug;
+
+            const messages = [
+                "💀 Oops… heartbreak incoming!",
+                "😂 Scam detected!",
+                "🥲 Time to rethink love…",
+                "🔥 Stay strong, single warrior!",
+                "😎 Cupid missed this one!",
+                "💘 Valentine drama alert!"
+            ];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+
+            Swal.fire({
+                title: '💌 Your Scam Report!',
+                text: message + ` (Scam Level: ${scamLevel})`,
+                icon: 'info',
+                confirmButtonText: 'View Full Report',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/report/${slug}/`;
+                }
+            });
+
+            let count = 30;
+            if (scamLevel > 150) count = 200;
+            else if (scamLevel > 100) count = 120;
+            else if (scamLevel > 50) count = 70;
+
+            confetti({
+                particleCount: count,
+                spread: 160,
+                origin: { y: 0.5 },
+                colors: ['#FF69B4','#FF1493','#FF4500','#FFD700']
+            });
+
+        } else {
+            Swal.fire({
+                title: "❌ Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error"
+            });
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        Swal.fire({
+            title: "❌ Error!",
+            text: "Network error. Try again.",
+            icon: "error"
+        });
+    });
+});
+</script>
+
+</body>
+</html>
