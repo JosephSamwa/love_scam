@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+
+# Node/Tailwind/SweetAlert build files
+node_modules/
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
